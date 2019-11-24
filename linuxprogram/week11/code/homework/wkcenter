@@ -1,0 +1,46 @@
+ #!/bin/bash
+     # chkconfig: 3 3 1
+     # description: web kill center 
+     EXEC_PATH=/usr/local/bin
+     EXEC=CenterServiced
+     PID_FILE=/var/run/CenterServiced.pid
+     DAEMON=/usr/local/bin/CenterServiced
+    if ! [ -x $EXEC_PATH/$EXEC ] ; then
+    echo "ERROR: $EXEC_PATH/$EXEC not found"
+    exit 1
+    fi
+    stop()
+    {
+    echo "Stoping $EXEC ..."
+    killall $DAEMON >/dev/null
+    echo "Shutting down $EXEC: [ OK ]"
+    }
+    start()
+    {
+    echo "Starting $EXEC ..."
+    $DAEMON > /dev/null &
+    echo "Starting $EXEC: [ OK ]"
+    }
+    restart()
+    {
+    stop
+    start
+    }
+    case "$1"in
+    start)
+    start
+    ;;
+    stop)
+    stop
+    ;;
+    restart)
+    restart
+    ;;
+    status)
+    status -p $PID_FILE $DAEMON
+    ;;
+    *)
+    echo "Usage: service $EXEC {start|stop|restart|status}"
+    exit 1
+    esac
+    exit $?
